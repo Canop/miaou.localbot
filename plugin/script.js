@@ -4,12 +4,16 @@ const db = require("./db.js");
 
 function handlerScript(userId, handlerName){
 	let handler = db.getHandler(userId, handlerName);
-	if (!handler) return `miaou.localbot.store.removeHandler("${handlerName}")`;
-	return `miaou.localbot.store.setHandler("${handlerName}", {
+	if (!handler) return `miaou.localbot.store.removeHandler("${handlerName}");`;
+	return `miaou.localbot.store.setHandler({
+		name: "${handler.name}",
+		room: ${handler.room},
 		on: "${handler.on}",
+		disabled: ${handler.disabled},
 		if: ${handler.if},
-		do: ${handler.do},
-	})`;
+		doBody: ${JSON.stringify(handler.doBody)},
+		do: (content, lb)=>{ ${handler.doBody} },
+	});`;
 }
 
 module.exports = function(req, res, next){

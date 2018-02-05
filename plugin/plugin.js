@@ -4,8 +4,7 @@ const parse = require("./parse.js");
 const execute = require("./execute.js");
 
 function onCommand(ct){
-	console.log("args:", ct.args);
-	let command = parse(ct.message.content); // throws if not successful
+	let command = parse(ct.message); // throws if not successful
 	console.log('command:', command);
 	ct.shoe.emit("localbot.refresh", execute(ct.user().id, command));
 	ct.reply("ok", true);

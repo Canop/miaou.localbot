@@ -1,6 +1,6 @@
 # miaou.localbot
 
-The `!!localbot` command lets miaou users manages kind of userscripts inside miaou without
+The `!!localbot` command lets miaou users manage kind of userscripts inside miaou without
 having to lower securiy (miaou has CSP preventing unsafe-eval and inline scripts).
 
 This is **not ready**. The API *will* change.
@@ -11,9 +11,20 @@ This is **not ready**. The API *will* change.
 
 With this command, a user registers a `ping` hook:
 
-	!!localbot add ping
+	!!localbot add ping-pong
 	on: sending_message
 	if: /\bping\/i
 	alert("pong!")
 
 Then on all messages he sends whose content contains `"ping"` an alert pops with `"pong!"`.
+
+### Confirmation
+
+	!!localbot add nojump
+	if: !!roulette jump
+	return confirm("Really?")
+
+### Fix a typo
+
+	!!localbot add req
+	return content.replace(/requète/g, "requête")

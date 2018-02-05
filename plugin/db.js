@@ -2,7 +2,7 @@
 
 const userStores = new Map; // userId=>{handlers}
 
-function getUserStore(userId){
+function getStore(userId){
 	let us = userStores.get(userId);
 	if (!us) {
 		userStores.set(userId, us={handlers: new Map});
@@ -10,10 +10,10 @@ function getUserStore(userId){
 	return us;
 }
 
-exports.addHandler = function(userId, name, handler){
-	getUserStore(userId).handlers.set(name, handler);
+exports.addHandler = function(userId, handler){
+	getStore(userId).handlers.set(handler.name, handler);
 }
 
 exports.getHandler = function(userId, name){
-	return getUserStore(userId).handlers.get(name);
+	return getStore(userId).handlers.get(name);
 }
