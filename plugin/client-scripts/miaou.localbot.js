@@ -35,7 +35,7 @@ miaou(function(localbot, chat, locals, md, plugins, ws){
 		if (!content) return;
 		let lb = {};
 		if (/^!!localbot\b/.test(content)) {
-			var editMatch = content.match(/^!!localbot\s+edit\s+([\w-]+)\s*$/);
+			let editMatch = content.match(/^!!localbot\s+edit\s+([\w-]+)\s*$/);
 			if (editMatch) {
 				// user asks for edition and doesn't provide the content of the handler
 				// so we complete the message
@@ -49,14 +49,14 @@ miaou(function(localbot, chat, locals, md, plugins, ws){
 			return;
 		}
 		if (md.shownErrors().length) return;
-		for (var h of localbot.store.handlers("sending_message")) {
+		for (let h of localbot.store.handlers("sending_message")) {
 			if (h.disabled) continue;
 			if (
 				!h.if ||
 				h.if.test(content) // assuming regexp
 			) {
 				console.log("localbot handler triggered:", h);
-				var r;
+				let r;
 				try {
 					r = h.do(content, lb);
 				} catch (e) {

@@ -17,8 +17,8 @@ miaou(function(localbot, ed){
 	});
 	function autocompleteArg(ac){
 		if (!ac.previous) return firstArgs;
-		for (var i=0; i<NB_DEEP_ARGS; i++) {
-			var arr = argSequences[i];
+		for (let i=0; i<NB_DEEP_ARGS; i++) {
+			let arr = argSequences[i];
 			if (arr.length>1 && arr[0]===ac.previous) {
 				return arr[1];
 			}

@@ -15,7 +15,7 @@ exports.addHandler = function(userId, handler){
 }
 
 exports.allHandlerNames = function(userId){
-	return Array.from(getStore(userId).handlers.keys());
+	return getStore(userId).handlers.keys();
 }
 
 exports.getHandler = function(userId, name){
