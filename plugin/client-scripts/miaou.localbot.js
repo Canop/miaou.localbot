@@ -56,7 +56,18 @@ miaou(function(localbot, chat, locals, md, plugins, ws){
 				h.if.test(content) // assuming regexp
 			) {
 				console.log("localbot handler triggered:", h);
-				var r = h.do(content, lb);
+				var r;
+				try {
+					r = h.do(content, lb);
+				} catch (e) {
+					console.log("Error in handler:", e);
+					return showError(
+						`localbot "${h.name}" handler crashed (see console).`+
+						`Hit [enter] again to send initial message.`,
+						content
+					);
+
+				}
 				console.log("Handler returned", r);
 				if (typeof r==="string" && r!==content) {
 					return showError(
