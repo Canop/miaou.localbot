@@ -1,5 +1,6 @@
 
 const db = require("./db.js");
+const Error = require("./Error.js");
 
 module.exports = function executeCommand(userId, command){
 	switch (command.verb) {

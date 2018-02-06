@@ -1,6 +1,7 @@
 // parse !!localbot commands
 
 const db = require("./db.js");
+const Error = require("./Error.js");
 
 function parseHandler(body){
 	if (!body) throw new Error("Empty handler");
