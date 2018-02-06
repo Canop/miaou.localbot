@@ -6,8 +6,9 @@ const execute = require("./execute.js");
 function onCommand(ct){
 	let command = parse(ct.message); // throws if not successful
 	console.log('command:', command);
-	ct.shoe.emit("localbot.refresh", execute(ct.user().id, command));
-	ct.reply("ok", true);
+	let r = execute(ct.user().id, command);
+	if (typeof r === "string") ct.reply(r);
+	else if (typeof r === "object") ct.shoe.emit("localbot.refresh", r);
 }
 
 exports.registerCommands = function(cb){

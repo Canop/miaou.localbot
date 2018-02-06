@@ -74,6 +74,10 @@ module.exports = function parse(message){
 		handler = db.getHandler(message.author, name);
 		if (!name) throw new Error("missing name");
 		break;
+	case "list":
+	case "load":
+	case "reload":
+		break;
 	default:
 		throw new Error("unknown command : " + verb);
 	}

@@ -14,6 +14,8 @@ module.exports = function executeCommand(userId, command){
 	case "disable":
 		command.handler.disabled = true;
 		return {handler: command.name};
+	case "list":
+		return ["known handlers:", ...db.allHandlerNames(userId)].join('\n* ');
 	default:
 		throw new Error("unknown verb: " + command.verb);
 	}
