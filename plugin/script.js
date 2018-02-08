@@ -12,7 +12,7 @@ function handlerScript(userId, handlerName){
 		disabled: ${handler.disabled},
 		if: ${handler.if},
 		doBody: ${JSON.stringify(handler.doBody)},
-		do: (content, lb)=>{ ${handler.doBody} },
+		do: (event)=>{ ${handler.doBody} },
 	});`;
 }
 

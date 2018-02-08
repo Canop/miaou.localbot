@@ -1,24 +1,30 @@
 miaou(function(localbot, chat, locals, plugins){
 
-	const handlersByEventType = {
-		sending_message: new Map // name->handler
-	};
+	const eventTypes = ["sending_message", "incoming_message", "incoming_user", "leaving_user"];
+
+	const handlersByEventType = eventTypes.reduce((o, e) => {
+		o[e]=new Set;
+		return o;
+	}, {});
+
+	const allHandlers = new Map; // name=>handler
 
 	function setHandler(handler){
 		console.log("setHandler", handler);
+		let oldHandler = allHandlers.get(handler.name);
+		if (oldHandler) {
+			handlersByEventType[oldHandler.on].delete(oldHandler);
+		}
 		let handlers = handlersByEventType[handler.on];
 		if (!handlers) throw new Error("Unsupported Event type: " + handler.on);
-		handlers.set(handler.name, handler);
-	}
-
-	function getHandler(name){
-		return handlersByEventType.sending_message.get(name);
+		handlers.add(handler);
+		allHandlers.set(handler.name, handler);
 	}
 
 	localbot.store = {
 		handlers: eventType => handlersByEventType[eventType].values(),
 		setHandler,
-		getHandler,
+		getHandler: name => allHandlers.get(name),
 	};
 
 });

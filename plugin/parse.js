@@ -2,6 +2,7 @@
 
 const db = require("./db.js");
 const Error = require("./Error.js");
+const eventTypes = new Set(["sending_message", "incoming_message", "incoming_user", "leaving_user"]);
 
 function parseHandler(body){
 	if (!body) throw new Error("Empty handler");
@@ -35,9 +36,9 @@ function parseHandler(body){
 	}
 	if (!doLines.length) throw new Error("No function body found");
 	h.doBody = doLines.join("\n");
-	new Function("content", h.doBody); // basic check of correctness
+	new Function("content", h.doBody); // basic check of syntactic correctness
 	if (h.on) {
-		if (h.on!=="sending_message") throw new Error("unknown event type");
+		if (!eventTypes.has(h.on)) throw new Error("unknown event type");
 	} else {
 		h.on = "sending_message";
 	}
