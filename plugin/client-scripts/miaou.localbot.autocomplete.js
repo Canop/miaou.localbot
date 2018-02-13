@@ -9,7 +9,8 @@ miaou(function(localbot, ed){
 		["disable"],
 		["set"],
 		["get"],
-		["reload"]
+		["reload"],
+		["load"]
 	];
 	const NB_DEEP_ARGS = 0;
 	const firstArgs = argSequences.map(function(v){

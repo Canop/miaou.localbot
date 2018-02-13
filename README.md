@@ -16,7 +16,7 @@ With this command, a user registers a `ping` hook:
 
 	!!localbot add ping-pong
 	on: sending_message
-	if: /\bping\/i
+	if: /\bping\b/i
 	alert("pong!")
 
 Then on all messages she sends whose content contains `"ping"` an alert pops with `"pong!"`.
@@ -56,6 +56,24 @@ If the user tries to send a message containing `!!roulette jump` he is asked con
 	if: /\b(hello|bonjour|salut)\b/i
 	event.autoReply("Hello", true)
 
+
+### Add a personal command to point typos in other user messages
+
+This one is much more complex, it looks at all other messages to search for a pattern, and propose a replacement. There's a confirmation before the message is sent.
+
+	!!localbot add fix
+	on: sending_message
+	if: /^:s/
+		let match = event.content().match(/^:s\/([^\/]+)\/([^\/]+)/)
+		if (!match) return
+		let messages = event.messages()
+		for (let i = messages.length; i--;) {
+			let message = messages[i]
+			let regex = new RegExp(match[1], "ig")
+			let replaced = message.content.replace(regex, "**"+match[2]+"**")
+			if (replaced===message.content) continue
+			return event.content()+"\n@"+message.authorname+" [did you mean](#"+message.id+")?\n> "+replaced
+		}
 
 ## Event Types
 
@@ -124,6 +142,8 @@ Most interactions of the script with miaou are done using the passed `event` obj
 * `honk()` : make some noise to alert you.
 
 * `notif(text)` : display a desktop notification.
+
+* `messages({flakes, self})` : return an array of all displayed messages.
 
 ## Restrictions
 

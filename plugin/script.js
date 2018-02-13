@@ -19,6 +19,11 @@ function handlerScript(userId, handlerName){
 module.exports = function(req, res, next){
 	let	userId = req.user.id,
 		handlerName = req.query.handler;
-	if (handlerName) return res.send(handlerScript(userId, handlerName));
-	res.send("alert('localbot get query not understood')");
+	if (handlerName) {
+		return res.send(handlerScript(userId, handlerName));
+	} else {
+		return res.send(Array.from(db.allHandlerNames(userId)).map(
+			name => handlerScript(userId, name)
+		).join("\n"));
+	}
 };

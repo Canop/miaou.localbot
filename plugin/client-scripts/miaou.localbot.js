@@ -23,6 +23,15 @@ miaou(function(localbot, chat, horn, locals, md, plugins, ws){
 			if (flake) s = "!!flake " + s;
 			return s;
 		}
+		messages({self=false, flakes=false} = {}){
+			return $("#messages .message").map(function(){
+				return $(this).dat("message");
+			}).get().filter(function(m){
+				if (!self && m.author===locals.me.id) return false;
+				if (!flakes && !m.id) return false;
+				return true;
+			});
+		}
 		send(text, flake){
 			$("#input").val(this._content(text, null, flake));
 		}
@@ -72,7 +81,7 @@ miaou(function(localbot, chat, horn, locals, md, plugins, ws){
 		];
 		if (handler.disabled) c.push("disabled: true");
 		if (handler.if) c.push(`if: ${handler.if}`);
-		c.push(handler.doBody);
+		c.push(...handler.doBody.split("\n").map(l=>"\t"+l.trim()));
 		setTimeout(function(){
 			$("#input").val(c.join("\n"));
 		}, 0);
@@ -202,7 +211,7 @@ miaou(function(localbot, chat, horn, locals, md, plugins, ws){
 			localbot.registerAutocomplete();
 			ws.on("localbot.refresh", function(arg){
 				console.log('ws.receive refresh arg:', arg);
-				if (arg.handler) localbot.refresh(arg.handler);
+				localbot.refresh(arg.handler);
 			});
 		}
 	});

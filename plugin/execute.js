@@ -16,6 +16,8 @@ module.exports = function executeCommand(userId, command){
 		return {handler: command.name};
 	case "list":
 		return ["known handlers:", ...db.allHandlerNames(userId)].join('\n* ');
+	case "load":
+		return {handler: command.name};
 	default:
 		throw new Error("unknown verb: " + command.verb);
 	}
