@@ -19,12 +19,14 @@ miaou(function(localbot, chat, locals, plugins){
 		if (!handlers) throw new Error("Unsupported Event type: " + handler.on);
 		handlers.add(handler);
 		allHandlers.set(handler.name, handler);
+		localbot.updateMenu();
 	}
 
 	localbot.store = {
 		handlers: eventType => handlersByEventType[eventType].values(),
 		setHandler,
 		getHandler: name => allHandlers.get(name),
+		allHandlers
 	};
 
 });

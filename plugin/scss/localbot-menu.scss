@@ -1,0 +1,84 @@
+#localbot-menu {
+	position: fixed;
+	left: 100px;
+	bottom: 10px;
+	z-index: 25;
+	display: flex;
+	flex-direction: column-reverse;
+	.menu-opener {
+		position: relative;
+		width: 22px;
+		height: 22px;
+		background: $bg-color;
+		cursor: pointer;
+		border-top-left-radius: 10px;
+		border-top-right-radius: 10px;
+		border-bottom-left-radius: 10px;
+		border-bottom-right-radius: 10px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		box-shadow: 2px 2px 4px black;
+		padding: 0 0 1px 1px;
+	}
+	.menu-content {
+		display: none;
+		padding: 5px;
+		background: $bg-color;
+		border-top-left-radius: 4px;
+		border-top-right-radius: 4px;
+		border-bottom-right-radius: 4px;
+		box-shadow: 2px 2px 4px black;
+		flex-direction: column;
+		button {
+			flex: 0 0 auto;
+		}
+	}
+	.localbot-handlers {
+		display: flex;
+		flex: 1 1 auto;
+		max-height: 300px;
+		align-items: stretch;
+		width: 250px;
+		overflow-y: auto;
+		.localbot-handler {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			.on {
+				&::before {
+					content: "on";
+					padding: 0 3px;
+					opacity: .8;
+				}
+				flex: 0 0 150px;
+				font-style: italic;
+			}
+			.name {
+				flex: 1 1 auto;
+				cursor: pointer;
+				text-overflow: ellipsis;
+				overflow-x: hidden;
+				font-weight: bold;
+			}
+		}
+	}
+	&:hover {
+		.menu-opener {
+			border-top-left-radius: 0;
+			border-top-right-radius: 0;
+			&::before {
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: -3px;
+				height: 6px;
+				content: "";
+				background: $bg-color;
+			}
+		}
+		.menu-content {
+			display: flex;
+		}
+	}
+}

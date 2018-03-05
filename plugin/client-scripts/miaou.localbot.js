@@ -1,4 +1,6 @@
-miaou(function(localbot, chat, horn, locals, md, plugins, ws){
+miaou(function(localbot, chat, gui, horn, locals, md, plugins, ws){
+
+	localbot.enabled = true;
 
 	let userVars = {};
 
@@ -99,6 +101,7 @@ miaou(function(localbot, chat, horn, locals, md, plugins, ws){
 	}
 
 	chat.on("incoming_message", function(message){
+		if (!localbot.enabled) return;
 		if (message.author===locals.me.id) return;
 		let content = message.content;
 		if (!content) return;
@@ -127,9 +130,11 @@ miaou(function(localbot, chat, horn, locals, md, plugins, ws){
 	});
 
 	chat.on("sending_message", function(message){
+		if (!localbot.enabled) return;
 		let content = message.content;
 		if (!content) return;
 		if (/^!!localbot\b/.test(content)) {
+			localbot.updateMenu();
 			let editMatch = content.match(/^!!localbot\s+edit\s+([\w-]+)\s*$/);
 			if (editMatch) {
 				// user asks for edition and doesn't provide the content of the handler
@@ -182,7 +187,7 @@ miaou(function(localbot, chat, horn, locals, md, plugins, ws){
 	});
 
 	chat.on("incoming_user", function(user){
-		console.log('incoming user:', user);
+		if (!localbot.enabled) return;
 		if (user.id===locals.me.id) return;
 		let event = new Event("incoming_user", {user});
 		for (let h of localbot.store.handlers("incoming_user")) {
@@ -208,6 +213,7 @@ miaou(function(localbot, chat, horn, locals, md, plugins, ws){
 
 	plugins.add("localbot", {
 		start: function(){
+			if (gui.mobile) return;
 			localbot.registerAutocomplete();
 			ws.on("localbot.refresh", function(arg){
 				console.log('ws.receive refresh arg:', arg);
