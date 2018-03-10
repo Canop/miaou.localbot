@@ -29,7 +29,6 @@ function parseHandler(body){
 			continue;
 		}
 		m = line.match(/^(?:do:)?\s*(.+)$/);
-		console.log('do m:', m);
 		if (m) {
 			doLines.push(m[1]);
 		}
@@ -48,31 +47,29 @@ function parseHandler(body){
 
 // returns a command object, or throws an error
 // commands are {verb, name, handler}
-module.exports = function parse(message){
+module.exports = async function parse(message){
 	let m = message.content.match(/^!!\w+\s+(\w+)(?:\s+(.*))?(?:\n([\s\S]+))?/);
-	console.log('m:', m);
 	if (!m) throw new Error("Invalid localbot command");
 	let [, verb, name, body] = m;
 	let handler;
 	switch (verb) {
 	case "edit":
-		// we'll handle edition like addition, but we check room is the same
 		if (!name) throw new Error("missing name");
-		handler = db.getHandler(message.author, name);
-		if (handler) {
-			if (handler.room!==message.room) {
-				throw new Error("room changed");
-			}
-		}
+		handler = await db.getHandlerByName(message.author, name);
+		if (!handler) throw new Error("handler not found");
+		let id = handler.id;
+		handler = parseHandler(body);
+		handler.name = name;
+		handler.id = id;
+		break;
 	case "add":
 		if (!name) throw new Error("missing name");
 		handler = parseHandler(body);
 		handler.name = name;
-		handler.room = message.room;
 		break;
 	case "enable":
 	case "disable":
-		handler = db.getHandler(message.author, name);
+		handler = await db.getHandlerByName(message.author, name);
 		if (!name) throw new Error("missing name");
 		break;
 	case "list":

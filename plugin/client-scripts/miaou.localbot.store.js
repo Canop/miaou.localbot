@@ -9,8 +9,8 @@ miaou(function(localbot, chat, locals, plugins){
 
 	const allHandlers = new Map; // name=>handler
 
-	function setHandler(handler){
-		console.log("setHandler", handler);
+	function setHandler(handler, activeInRoom){
+		console.log("setHandler", handler, activeInRoom);
 		let oldHandler = allHandlers.get(handler.name);
 		if (oldHandler) {
 			handlersByEventType[oldHandler.on].delete(oldHandler);
@@ -19,6 +19,7 @@ miaou(function(localbot, chat, locals, plugins){
 		if (!handlers) throw new Error("Unsupported Event type: " + handler.on);
 		handlers.add(handler);
 		allHandlers.set(handler.name, handler);
+		handler.active = !!activeInRoom;
 		localbot.updateMenu();
 	}
 

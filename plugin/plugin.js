@@ -1,12 +1,15 @@
 // The localbot plugin
 
 const parse = require("./parse.js");
+const db = require("./db.js");
 const execute = require("./execute.js");
 
-function onCommand(ct){
-	let command = parse(ct.message); // throws if not successful
+exports.name = "localbot";
+
+async function onCommand(ct){
+	let command = await parse(ct.message); // throws if not successful
 	console.log('command:', command);
-	let r = execute(ct.user().id, command);
+	let r = await execute(ct.user().id, command);
 	if (typeof r === "string") ct.reply(r);
 	else if (typeof r === "object") ct.shoe.emit("localbot.refresh", r);
 }
@@ -22,3 +25,18 @@ exports.registerCommands = function(cb){
 exports.registerRoutes = map=>{
 	map("get", /^\/localbot\/script.js/, require("./script.js"));
 }
+
+exports.init = function(miaou){
+	require("./db.js").init(exports.name, miaou);
+}
+
+exports.onNewShoe = function(shoe){
+	shoe.socket
+	.on('localbot.activate', function(arg){ // FIXME check userId ?
+		db.activateHandlerInRoom(arg.handlerId, arg.roomId);
+	})
+	.on('localbot.unactivate', function(arg){
+		db.unactivateHandlerInRoom(arg.handlerId, arg.roomId);
+	})
+}
+

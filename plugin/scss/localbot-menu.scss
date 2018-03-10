@@ -5,11 +5,12 @@
 	z-index: 25;
 	display: flex;
 	flex-direction: column-reverse;
+	color: $menu-item-color;
 	.menu-opener {
 		position: relative;
 		width: 22px;
 		height: 22px;
-		background: $bg-color;
+		background: $menu-background;
 		cursor: pointer;
 		border-top-left-radius: 10px;
 		border-top-right-radius: 10px;
@@ -18,24 +19,30 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		box-shadow: 2px 2px 4px black;
+		box-shadow: 0 0 2px black;
 		padding: 0 0 1px 1px;
 	}
 	.menu-content {
 		display: none;
 		padding: 5px;
-		background: $bg-color;
-		border-top-left-radius: 4px;
-		border-top-right-radius: 4px;
-		border-bottom-right-radius: 4px;
-		box-shadow: 2px 2px 4px black;
+		background: $menu-background;
+		border-top-left-radius: 2px;
+		border-top-right-radius: 2px;
+		border-bottom-right-radius: 2px;
+		box-shadow: 0 0 2px black;
 		flex-direction: column;
-		button {
+		.buttons {
 			flex: 0 0 auto;
+			display: flex;
+			flex-direction: row;
+			button {
+				flex: 1 1 auto;
+			}
 		}
 	}
 	.localbot-handlers {
 		display: flex;
+		flex-direction: column;
 		flex: 1 1 auto;
 		max-height: 300px;
 		align-items: stretch;
@@ -43,15 +50,15 @@
 		overflow-y: auto;
 		.localbot-handler {
 			display: flex;
-			flex-direction: column;
 			align-items: center;
 			.on {
+				font-size: 85%;
 				&::before {
 					content: "on";
 					padding: 0 3px;
 					opacity: .8;
 				}
-				flex: 0 0 150px;
+				flex: 0 0 130px;
 				font-style: italic;
 			}
 			.name {
@@ -59,7 +66,6 @@
 				cursor: pointer;
 				text-overflow: ellipsis;
 				overflow-x: hidden;
-				font-weight: bold;
 			}
 		}
 	}
@@ -74,7 +80,7 @@
 				top: -3px;
 				height: 6px;
 				content: "";
-				background: $bg-color;
+				background: $menu-background;
 			}
 		}
 		.menu-content {

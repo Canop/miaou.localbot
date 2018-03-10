@@ -1,6 +1,7 @@
 miaou(function(localbot, chat, gui, horn, locals, md, plugins, ws){
 
 	localbot.enabled = true;
+	localbot.autoload = localStorage.getItem("localbot.autoload") == "true";
 
 	let userVars = {};
 
@@ -25,10 +26,11 @@ miaou(function(localbot, chat, gui, horn, locals, md, plugins, ws){
 			if (flake) s = "!!flake " + s;
 			return s;
 		}
-		messages({self=false, flakes=false} = {}){
+		messages({self=false, flakes=false, deleted=false} = {}){
 			return $("#messages .message").map(function(){
 				return $(this).dat("message");
 			}).get().filter(function(m){
+				if (!deleted && !m.content) return false;
 				if (!self && m.author===locals.me.id) return false;
 				if (!flakes && !m.id) return false;
 				return true;
@@ -71,12 +73,13 @@ miaou(function(localbot, chat, gui, horn, locals, md, plugins, ws){
 	localbot.refresh = function(handler){
 		let url = "localbot/script.js?time="+Date.now();
 		if (handler) url += "&handler="+encodeURIComponent(handler);
+		url += "&room="+locals.room.id;
 		let script = document.createElement("script");
 		script.setAttribute("src", url);
 		document.head.appendChild(script);
 	}
 
-	function editHandler(handler){
+	localbot.editHandler = function(handler){
 		let c = [
 			`!!localbot edit ${handler.name}`,
 			`on: ${handler.on}`
@@ -107,7 +110,7 @@ miaou(function(localbot, chat, gui, horn, locals, md, plugins, ws){
 		if (!content) return;
 		let event = new Event("incoming_message", {message});
 		for (let h of localbot.store.handlers("incoming_message")) {
-			if (h.disabled) continue;
+			if (h.disabled || !h.active) continue;
 			if (
 				!h.if ||
 				h.if.test(content) // assuming regexp
@@ -123,8 +126,6 @@ miaou(function(localbot, chat, gui, horn, locals, md, plugins, ws){
 					);
 
 				}
-				console.log("Handler returned", r);
-				// Right now I don't see what to do with that returned value
 			}
 		}
 	});
@@ -142,8 +143,7 @@ miaou(function(localbot, chat, gui, horn, locals, md, plugins, ws){
 				let name = editMatch[1];
 				let handler = localbot.store.getHandler(name);
 				if (!handler) return showError("Handler not found", content);
-				if (handler.room!==locals.room.id) return showError("Wrong room", content);
-				else editHandler(handler);
+				else localbot.editHandler(handler);
 				return false;
 			}
 			return;
@@ -151,7 +151,7 @@ miaou(function(localbot, chat, gui, horn, locals, md, plugins, ws){
 		if (md.shownErrors().length) return;
 		let event = new Event("sending_message", {message});
 		for (let h of localbot.store.handlers("sending_message")) {
-			if (h.disabled) continue;
+			if (h.disabled || !h.active) continue;
 			if (
 				!h.if ||
 				h.if.test(content) // assuming regexp
@@ -191,7 +191,7 @@ miaou(function(localbot, chat, gui, horn, locals, md, plugins, ws){
 		if (user.id===locals.me.id) return;
 		let event = new Event("incoming_user", {user});
 		for (let h of localbot.store.handlers("incoming_user")) {
-			if (h.disabled) continue;
+			if (h.disabled || !h.active) continue;
 			if (
 				!h.if ||
 				h.if.test(user.name) // assuming regexp
@@ -206,7 +206,6 @@ miaou(function(localbot, chat, gui, horn, locals, md, plugins, ws){
 						`localbot "${h.name}" handler crashed (see console).`
 					);
 				}
-				console.log("Handler returned", r);
 			}
 		}
 	});
@@ -216,9 +215,10 @@ miaou(function(localbot, chat, gui, horn, locals, md, plugins, ws){
 			if (gui.mobile) return;
 			localbot.registerAutocomplete();
 			ws.on("localbot.refresh", function(arg){
-				console.log('ws.receive refresh arg:', arg);
 				localbot.refresh(arg.handler);
 			});
 		}
 	});
+
+	if (localbot.autoload) localbot.refresh();
 });

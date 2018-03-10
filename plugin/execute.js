@@ -2,11 +2,13 @@
 const db = require("./db.js");
 const Error = require("./Error.js");
 
-module.exports = function executeCommand(userId, command){
+module.exports = async function executeCommand(userId, command){
 	switch (command.verb) {
 	case "add":
+		await db.addHandler(userId, command.handler);
+		return {handler: command.name};
 	case "edit":
-		db.addHandler(userId, command.handler);
+		await db.editHandler(userId, command.handler);
 		return {handler: command.name};
 	case "enable":
 		command.handler.disabled = false;
@@ -15,7 +17,7 @@ module.exports = function executeCommand(userId, command){
 		command.handler.disabled = true;
 		return {handler: command.name};
 	case "list":
-		return ["known handlers:", ...db.allHandlerNames(userId)].join('\n* ');
+		return ["known handlers:", ...await db.allHandlerNames(userId)].join('\n* ');
 	case "load":
 		return {handler: command.name};
 	default:
