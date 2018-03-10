@@ -103,6 +103,10 @@ miaou(function(localbot, chat, gui, horn, locals, md, plugins, ws){
 		return false;
 	}
 
+	function addStats(handler){
+		ws.emit("localbot.triggered", handler.id);
+	}
+
 	chat.on("incoming_message", function(message){
 		if (!localbot.enabled) return;
 		if (message.author===locals.me.id) return;
@@ -116,9 +120,9 @@ miaou(function(localbot, chat, gui, horn, locals, md, plugins, ws){
 				h.if.test(content) // assuming regexp
 			) {
 				console.log("localbot handler triggered:", h);
-				let r;
+				addStats(h);
 				try {
-					r = h.do(event);
+					h.do(event);
 				} catch (e) {
 					console.log("Error in handler:", e);
 					return showError(
@@ -157,6 +161,7 @@ miaou(function(localbot, chat, gui, horn, locals, md, plugins, ws){
 				h.if.test(content) // assuming regexp
 			) {
 				console.log("localbot handler triggered:", h);
+				addStats(h);
 				let r;
 				try {
 					r = h.do(event);
@@ -197,9 +202,9 @@ miaou(function(localbot, chat, gui, horn, locals, md, plugins, ws){
 				h.if.test(user.name) // assuming regexp
 			) {
 				console.log("localbot handler triggered:", h);
-				let r;
+				addStats(h);
 				try {
-					r = h.do(event);
+					h.do(event);
 				} catch (e) {
 					console.log("Error in handler:", e);
 					return showError(

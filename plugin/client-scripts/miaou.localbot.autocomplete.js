@@ -2,6 +2,7 @@ miaou(function(localbot, ed){
 
 	const argSequences = [
 		["list", ["vars", "handlers"]],
+		["stats", ["room", "rooms", "me"]],
 		["add"],
 		["edit"],
 		["delete"],
@@ -10,7 +11,7 @@ miaou(function(localbot, ed){
 		["set"],
 		["get"],
 		["reload"],
-		["load"]
+		["load"],
 	];
 	const NB_DEEP_ARGS = 0;
 	const firstArgs = argSequences.map(function(v){

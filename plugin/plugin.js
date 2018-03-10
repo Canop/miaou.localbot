@@ -2,11 +2,15 @@
 
 const parse = require("./parse.js");
 const db = require("./db.js");
+const stats = require("./stats.js");
 const execute = require("./execute.js");
 
 exports.name = "localbot";
 
 async function onCommand(ct){
+	if (/^stats/.test(ct.args)) {
+		return await stats.onCommand(ct);
+	}
 	let command = await parse(ct.message); // throws if not successful
 	console.log('command:', command);
 	let r = await execute(ct.user().id, command);
@@ -37,6 +41,10 @@ exports.onNewShoe = function(shoe){
 	})
 	.on('localbot.unactivate', function(arg){
 		db.unactivateHandlerInRoom(arg.handlerId, arg.roomId);
+	})
+	.on('localbot.triggered', function(handlerId){
+		console.log(`localbot ${handlerId} triggered for @${shoe.publicUser.name} in room ${shoe.room.id}`);
+		stats.triggered(shoe.publicUser.id, shoe.room.id, handlerId);
 	})
 }
 
